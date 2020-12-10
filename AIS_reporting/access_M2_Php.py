@@ -69,7 +69,7 @@ import os
 
 localDir = os.getcwd()
 print('local directory is ', localDir)
-dateStr = '12/04/2020 12:00'
+dateStr = '12/09/2020 12:00'
 outputDir = '/M2_output/'
 
 
@@ -113,12 +113,20 @@ for item in jsonData:
 
             except:
                 []
-            photos = item['photos']
+            try:
+                photos = item['photos']
+            except:
+                photos = []
 #            for photo in photos:
 #                print('photos= ', photo['key'])
             if int(mmsi) > 1000:
                 aveSpeed = (float(item['minimum_speed']) + float(item['maximum_speed'])) / 2
-                outDataline = dateStr+'\t'+ str(gmtSec)+'\t'+ mmsi+'\t'+item['vessel_name']+'\t'+ str(aveSpeed)+'\t'+ item['closest_approach']+'\t'+photos[0]['key']+'\n'
+                if photos != []:
+                    outDataline = dateStr + '\t' + str(gmtSec) + '\t' + mmsi + '\t' + item['vessel_name'] + '\t' + str(
+                        aveSpeed) + '\t' + item['closest_approach'] + '\t' + photos[0]['key'] + '\n'
+                else:
+                    outDataline = dateStr + '\t' + str(gmtSec) + '\t' + mmsi + '\t' + item['vessel_name'] + '\t' + str(
+                        aveSpeed) + '\t' + item['closest_approach'] + '\t' + 'no Photos' + '\n'
                 print(outDataline)
                 outFile.write(outDataline)
         except:
