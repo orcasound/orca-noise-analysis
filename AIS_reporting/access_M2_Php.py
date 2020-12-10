@@ -70,16 +70,19 @@ import os
 localDir = os.getcwd()
 print('local directory is ', localDir)
 dateStr = '12/04/2020 12:00'
-outputDir = 'M2_output'
+outputDir = '/M2_output/'
 
-dateStrOutput = 
-outFilename = 'AIS_at_{}.csv'.format(dateStr)
-outFile = open(outFilename, 'w')
+
 pst = pytz.timezone('America/Los_Angeles')
 dt = datetime.datetime.strptime(dateStr, "%m/%d/%Y %H:%M")
 dt = pst.localize(dt)    #localize to time zone
 gmtSec = time.mktime(dt.timetuple())  # convert to gmt seconds since epoch
+a = dateStr.replace(' ', '-')
+dateStr = a.replace('/', '_')   # fix for outputting
 
+outFilename = 'AIS_at_{}.csv'.format(dateStr)
+outFullFilename = localDir + outputDir + outFilename
+outFile = open(outFullFilename, 'w')
 #build the php request
 url = 'https://m2.protectedseas.net/php/utils/closestApproach.php?ts={}'.format(gmtSec)
 
@@ -100,24 +103,29 @@ outFile.write(outFileHeader)
 for item in jsonData:
     if isinstance(item, dictTyp):   # likely don't need this check, but so well.
         try:
-            print('m2_id=', item['m2_id'])  # print a few key's values, just for fun
+#            print('m2_id=', item['m2_id'])  # print a few key's values, just for fun
+            mmsi = 0
             try:
                 mmsi = item['m2_id'].split('-')[0]
-                if int(mmsi) > 10000:           #  first part of m2_id and radar_track_id is MMSI if one was reported via AIS otherwise a small integer track number
-                    print('mmsi number = {}'.format(mmsi))
-                print('vessel_name=', item['vessel_name'], 'min and max speeds=',item['minimum_speed'], item['maximum_speed'])
+#                if int(mmsi) > 10000:           #  first part of m2_id and radar_track_id is MMSI if one was reported via AIS otherwise a small integer track number
+#                    print('mmsi number = {}'.format(mmsi))
+#                print('vessel_name=', item['vessel_name'], 'min and max speeds=',item['minimum_speed'], item['maximum_speed'])
+
             except:
                 []
             photos = item['photos']
-            for photo in photos:
-                print('photos= ', photo['key'])
+#            for photo in photos:
+#                print('photos= ', photo['key'])
             if int(mmsi) > 1000:
-                outDataline = '{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format(dateStr, gmtSec, mmsi,item['vessel_name'], aveSpeed, item['closest_approach'],photos)
+                aveSpeed = (float(item['minimum_speed']) + float(item['maximum_speed'])) / 2
+                outDataline = dateStr+'\t'+ str(gmtSec)+'\t'+ mmsi+'\t'+item['vessel_name']+'\t'+ str(aveSpeed)+'\t'+ item['closest_approach']+'\t'+photos[0]['key']+'\n'
+                print(outDataline)
                 outFile.write(outDataline)
         except:
             []
     print('json record')
     print(json.dumps(item, sort_keys=True))  # dump the entire json record
+    outFile.close()
 
 
 
