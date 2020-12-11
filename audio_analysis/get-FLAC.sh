@@ -9,7 +9,7 @@
 # Hardcoding FLAC file location for now, with test files in a test directory:
 # Eventually, the local root directory should probably be an environmental variable, 
 # e.g. in .env file that is documented in standard format, but in .gitignore
-aws --no-sign-request s3 sync s3://archive-orcasound-net/rpi_orcasound_lab/flac/test/ ~/shipnoise-net-data/audio/test
+aws --no-sign-request s3 sync s3://archive-orcasound-net/rpi_orcasound_lab/flac/test/ ~/shipnoise-data/audio/test
 
 
 # If we ingest HLS data and transcode to FLAC, 
