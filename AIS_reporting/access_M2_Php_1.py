@@ -68,7 +68,7 @@ import pytz  # time zones -- install via python -m pip install pytz
 
 localDir = '/home/val/shipnoise-data/'  # this is OUTSIDE the repo
 print('local directory is ', localDir)
-dateStr = '12/04/2020 12:00'
+dateStr = '12/09/2020 12:00'
 timeWindow = 300
 outputDir = 'ais/'
 
@@ -81,7 +81,7 @@ dateStr = a.replace('/', '_')   # fix for outputting
 
 outFilename = 'AIS_at_{}.csv'.format(dateStr)
 outFullFilename = localDir + outputDir + outFilename
-print("output file is ",outFullFilename)
+print(outFullFilename)
 
 
 #build the php request
@@ -103,15 +103,13 @@ outFileHeader = 'datetime\tgmtSec\tmmsi\tvesselName\taveSpeed\tclosestApproach\t
 with open(outFullFilename, 'w') as outFile:
     outFile.write(outFileHeader)
     for item in jsonData:
-        print('json record')
-        print(json.dumps(item, sort_keys=True))  # dump the entire json record
         try:
             mmsi = item['m2_id'].split('-')[0]
         except:
             mmsi = 0
-#        if int(mmsi) > 10000:           #  first part of m2_id and radar_track_id is MMSI if one was reported via AIS otherwise a small integer track number
-#            print('mmsi number = {}'.format(mmsi))
-#        print('vessel_name=', item['vessel_name'], 'min and max speeds=',item['minimum_speed'], item['maximum_speed'])
+    #                if int(mmsi) > 10000:           #  first part of m2_id and radar_track_id is MMSI if one was reported via AIS otherwise a small integer track number
+    #                    print('mmsi number = {}'.format(mmsi))
+    #                print('vessel_name=', item['vessel_name'], 'min and max speeds=',item['minimum_speed'], item['maximum_speed'])
 
         try:
             photos = item['photos']
@@ -122,16 +120,20 @@ with open(outFullFilename, 'w') as outFile:
         if int(mmsi) > 1000:
             aveSpeed = (float(item['minimum_speed']) + float(item['maximum_speed'])) / 2
             if photos != []:
-                outDataline = '{}\t{}\t{}\t{:0.1f}\t{:0.1f}\t{:0.1f}\t{}\n'.format(dateStr,gmtSec,mmsi,aveSpeed,
+                outDataline = '{}\t{}\t{}\t{}\t{:0.1f}\t{:0.1f}\t{:0.1f}\t{}\n'.format(dateStr,gmtSec,mmsi,aveSpeed,
                                                                     float(item['closest_approach']),
-                                                                    float(item['closest_approach']), photos[0]['key'])
+                                                                    float(item['closest_approach']), photo[0]['key'])
             else:
                 outDataline = '{}\t{}\t{}\t{:0.1f}\t{:0.1f}\t{:0.1f}\t{}\n'.format(dateStr, gmtSec, mmsi, aveSpeed,
                                                                     float(item['closest_approach']),
                                                                     float(item['closest_approach']), 'no photo')
+
+            print('before', outDataline)
             outFile.write(outDataline)
+            print('after', outDataline)
 
-
+    #    print('json record')
+    #    print(json.dumps(item, sort_keys=True))  # dump the entire json record
     #
     outFile.close()
 
