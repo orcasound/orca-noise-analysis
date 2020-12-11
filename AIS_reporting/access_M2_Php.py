@@ -60,13 +60,15 @@ Director, Protected Seas
 Anthropocene Institute
 
 """
+import os
 import datetime
 import json
 import time
 import urllib.request
 import pytz  # time zones -- install via python -m pip install pytz
 
-localDir = '~/shipnoise-data/'  # this is OUTSIDE the repo
+HOME= os.environ["HOME"]
+localDir= os.path.join(HOME,"shipnoise-data/")  # this is OUTSIDE the repo
 print('local directory is ', localDir)
 dateStr = '12/11/2020 01:55'
 timeWindow = 300
@@ -122,12 +124,10 @@ with open(outFullFilename, 'w') as outFile:
         if int(mmsi) > 1000:
             aveSpeed = (float(item['minimum_speed']) + float(item['maximum_speed'])) / 2
             if photos != []:
-                outDataline = '{}\t{}\t{}\t{:0.1f}\t{:0.1f}\t{:0.1f}\t{}\n'.format(dateStr,gmtSec,mmsi,aveSpeed,
-                                                                    float(item['closest_approach']),
+                outDataline = '{}\t{}\t{}\t{:0.1f}\t{:0.1f}\t{}\n'.format(dateStr,gmtSec,mmsi,aveSpeed,
                                                                     float(item['closest_approach']), photos[0]['key'])
             else:
-                outDataline = '{}\t{}\t{}\t{:0.1f}\t{:0.1f}\t{:0.1f}\t{}\n'.format(dateStr, gmtSec, mmsi, aveSpeed,
-                                                                    float(item['closest_approach']),
+                outDataline = '{}\t{}\t{}\t{:0.1f}\t{:0.1f}\t{}\n'.format(dateStr, gmtSec, mmsi, aveSpeed,
                                                                     float(item['closest_approach']), 'no photo')
             outFile.write(outDataline)
 
