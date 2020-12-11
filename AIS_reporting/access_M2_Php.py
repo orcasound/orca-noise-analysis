@@ -17,7 +17,7 @@ ts = <unix timestamp>, pick the center time to search
 example: https://m2.protectedseas.net/php/utils/closestApproach.php?ts=1607104728
 
 window = <seconds>, change the time window before / after ts to search
-example: https://m2.protectedseas.net/php/utils/closestApproach.php?ts=1607104728&window=300
+example: https://m2.protectedseas.net/php/utils/closestApproach.php?ts=16071047281Vr2pHn9vo300
 
 source = radar OR ais, only return radar or ais targets
 example: https://m2.protectedseas.net/php/utils/closestApproach.php?ts=1607104728&ais
@@ -70,6 +70,7 @@ import os
 localDir = os.getcwd()
 print('local directory is ', localDir)
 dateStr = '12/09/2020 12:00'
+timeWindow = 300
 outputDir = '/M2_output/'
 
 
@@ -84,14 +85,14 @@ outFilename = 'AIS_at_{}.csv'.format(dateStr)
 outFullFilename = localDir + outputDir + outFilename
 outFile = open(outFullFilename, 'w')
 #build the php request
-url = 'https://m2.protectedseas.net/php/utils/closestApproach.php?ts={}'.format(gmtSec)
+url = 'https://m2.protectedseas.net/php/utils/closestApproach.php?ts={}&window={}'.format(gmtSec, timeWindow)
 
 with urllib.request.urlopen(url) as response:
    html = response.read()
 
 jsonData = json.loads(html)
-print("jsonData is of type ", type(jsonData))
-print("     list has length=", len(jsonData))
+#print("jsonData is of type ", type(jsonData))
+print("jsonData list has length=", len(jsonData))
 
 dictTyp = type({'a':1})   # defined here to get a class 'dict' object for testing in isinstance  (Likely a better way to do this.)
 
@@ -127,12 +128,13 @@ for item in jsonData:
                 else:
                     outDataline = dateStr + '\t' + str(gmtSec) + '\t' + mmsi + '\t' + item['vessel_name'] + '\t' + str(
                         aveSpeed) + '\t' + item['closest_approach'] + '\t' + 'no Photos' + '\n'
-                print(outDataline)
+                print('before', outDataline)
                 outFile.write(outDataline)
+                print('after', outDataline)
         except:
-            []
-    print('json record')
-    print(json.dumps(item, sort_keys=True))  # dump the entire json record
+            input('????')
+#    print('json record')
+#    print(json.dumps(item, sort_keys=True))  # dump the entire json record
     outFile.close()
 
 
