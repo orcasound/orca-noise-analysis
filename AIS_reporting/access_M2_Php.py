@@ -66,9 +66,9 @@ import time
 import urllib.request
 import pytz  # time zones -- install via python -m pip install pytz
 
-localDir = '/home/val/shipnoise-data/'  # this is OUTSIDE the repo
+localDir = '~/shipnoise-data/'  # this is OUTSIDE the repo
 print('local directory is ', localDir)
-dateStr = '12/04/2020 12:00'
+dateStr = '12/11/2020 01:55'
 timeWindow = 300
 outputDir = 'ais/'
 
