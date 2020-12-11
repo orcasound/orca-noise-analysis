@@ -6,8 +6,11 @@
 # Add some logic to skip data that isn't between the desired start and stop times
 # i.e. within aws sync call or in the for loop (delete some .ts segments; rename others)
 
-#hardcoding FLAC file location for now, with test files in a test directory:
-aws s3 sync s3://archive-orcasound-net/rpi_orcasound_lab/flac/test/ .
+# Hardcoding FLAC file location for now, with test files in a test directory:
+# Eventually, the local root directory should probably be an environmental variable, 
+# e.g. in .env file that is documented in standard format, but in .gitignore
+aws --no-sign-request s3 sync s3://archive-orcasound-net/rpi_orcasound_lab/flac/test/ ~/shipnoise-net-data/audio/test
+
 
 # If we ingest HLS data and transcode to FLAC, 
 # this script will eventually expect these arguments (or need these variables):
